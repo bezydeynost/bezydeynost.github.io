@@ -1,0 +1,14 @@
+---
+import {ui} from '../../i18n/ui';
+import Home from '../../components/Home.astro';
+
+const {lang: langParam} = Astro.params;
+
+if (!langParam || !(langParam in ui)) {
+  return new Response(null, {status: 404});
+}
+
+const lang = langParam as keyof typeof ui;
+---
+
+<Home lang={lang} />

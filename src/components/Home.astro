@@ -1,0 +1,145 @@
+---
+import {ui} from '../i18n/ui';
+import {useTranslation} from '../i18n/utils';
+import Layout from '../layouts/Layout.astro';
+import Link from './Link.astro';
+import MusicList from './Music/List.svelte';
+
+interface Props {
+  lang: keyof typeof ui;
+}
+
+const {lang} = Astro.props;
+const t = useTranslation(lang);
+
+let neko: {url: string; source_url: string} | undefined;
+
+const nekoResult = await fetch('https://nekos.best/api/v2/neko', {
+  headers: {
+    'User-Agent':
+      'bezydeynost.github.io'
+  },
+  signal: AbortSignal.timeout(5000)
+});
+
+if (nekoResult.ok) {
+  const json = await nekoResult.json();
+  neko = json.results?.[0];
+} else {
+  console.error(await nekoResult.text());
+}
+---
+
+<Layout lang={lang}>
+  <div class="middle">
+    <div class="md:grid md:grid-cols-2 md:gap-4">
+      <section>
+        <h3
+          class="text-2xl my-12 text-[transparent] font-bold bg-clip-text bg-gradient-to-r from-lavender to-mauve"
+        >
+          {t('title')}
+        </h3>
+
+        <p
+          class="text-lg text-[transparent] bg-clip-text bg-gradient-to-br from-text to-subtext1"
+        >
+          <Fragment set:html={t('description')} />
+        </p>
+
+        <p class="mt-2 text-text text-xs">
+          <Fragment set:html={t('prevKnown')} />
+        </p>
+      </section>
+
+      <section class="mt-12 md:row-span-2 md:flex md:flex-col md:min-h-0">
+        <p><Fragment set:html={t('neko')} /></p>
+        <a class="block md:flex-1 md:min-h-0" href={neko?.source_url} target="_blank">
+          <img
+            class="object-cover w-full min-h-96 max-w-full sm:min-h-[32rem] md:h-full md:min-h-0"
+            id="neko"
+            src={neko?.url}
+            alt="Random neko"
+          />
+        </a>
+      </section>
+
+      <section class="mt-12">
+        <h4>{t('connect')}</h4>
+
+        <div class="flex flex-col gap-2">
+          <ul class="flex flex-col mt-2 gap-1.5">
+            <Link
+              iconName="github"
+              text="Github"
+              href="https://github.com/bezydeynost"
+              shortlink="@bezydeynost"
+              lineColor="#57606a"
+            />
+
+            <Link
+              iconName="discord"
+              text="Discord"
+              href="https://discord.com/users/443793342724309012"
+              shortlink="@bezydeynost"
+              lineColor="#161cbc"
+            />
+
+            <Link
+              iconName="telegram"
+              text="Telegram"
+              href="https://t.me/falguren"
+              shortlink="@bezydeynost"
+              lineColor="#25a3e1"
+            />
+
+            <Link
+              iconName="steam"
+              text="Steam"
+              href="https://steamcommunity.com/id/bezdnst/"
+              shortlink="@bezydeynost"
+              lineColor="#fff"
+            />
+
+            <Link
+              iconName="lastfm"
+              text="Last.fm"
+              href="https://www.last.fm/user/bezydeynost"
+              shortlink="@bezydeynost"
+              lineColor="#d92323"
+            />
+
+            <Link
+              iconName="spotify"
+              text="Spotify"
+              href="https://open.spotify.com/user/r8047zjjlw2xnd5fi2idgk3nk"
+              shortlink="@bezydeynost"
+              lineColor="#1ed760"
+            />
+
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <section class="mt-4 md:mt-12" id="music">
+      <h4 class="text-xl mb-2">My last scrobbles:</h4>
+      <MusicList client:load />
+    </section>
+  </div>
+</Layout>
+
+<style>
+  #neko {
+    visibility: hidden;
+    object-position: center;
+  }
+
+  #neko[src] {
+    visibility: visible;
+  }
+
+  [data-icon] {
+    font-size: 2rem;
+    @apply text-subtext1;
+  }
+</style>

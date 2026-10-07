@@ -1,0 +1,52 @@
+html,
+body,
+header {
+  @apply text-text bg-base min-h-screen scroll-smooth;
+}
+
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+html,
+body,
+header {
+  @apply transition-colors;
+  transition-duration: var(--color-duration);
+}
+
+:root {
+  --color-duration: 0;
+}
+
+.middle {
+  --margin: 20%;
+  margin: 2rem var(--margin);
+}
+
+@media screen and (max-width: 1200px) {
+  .middle {
+    --margin: 10%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .middle {
+    --margin: 5%;
+  }
+}
+
+a {
+  @apply hover:text-mauve;
+}
+
+.noto-emoji {
+  font-family: 'Noto Color Emoji', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}

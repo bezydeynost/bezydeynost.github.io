@@ -1,0 +1,9 @@
+---
+import Home from '../components/Home.astro';
+import {getLangFromHeader} from '../i18n/utils';
+
+const lang = getLangFromHeader(Astro.request.headers.get('accept-language'));
+Astro.response.headers.set('Vary', 'Accept-Language, User-Agent');
+---
+
+<Home lang={lang} />
