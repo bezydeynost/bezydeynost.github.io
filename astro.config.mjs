@@ -33,5 +33,9 @@ export default defineConfig({
   site: 'https://bezydeynost.vercel.app',
   output: 'server',
 
-  adapter: vercel()
+  adapter: vercel({
+  webAnalytics: {
+    enabled: true,
+  },
+}),
 });
