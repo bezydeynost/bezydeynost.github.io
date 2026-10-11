@@ -38,6 +38,7 @@
     ]
   },
   "dependencies": {
-    "@astrojs/vercel": "^11.0.12"
+    "@astrojs/vercel": "^11.0.12",
+    "@vercel/analytics": "^2.0.1"
   }
 }
