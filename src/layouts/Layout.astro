@@ -21,7 +21,7 @@ const { lang } = Astro.props;
       class="w-full min-h-16 bg-mantle px-4 py-2 flex gap-4 justify-center items-center"
     >
       <ThemeSelector />
-      <LanguageSelector />
+      <LanguageSelector currentLang={lang} />
     </header>
     <main>
       <slot />

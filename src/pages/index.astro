@@ -1,9 +1,15 @@
 ---
 import Home from '../components/Home.astro';
 import {getLangFromHeader} from '../i18n/utils';
+import {ui} from '../i18n/ui';
 
-const lang = getLangFromHeader(Astro.request.headers.get('accept-language'));
-Astro.response.headers.set('Vary', 'Accept-Language, User-Agent');
+const cookieLang = Astro.cookies.get('lang')?.value;
+const lang =
+  cookieLang && cookieLang in ui
+    ? (cookieLang as keyof typeof ui)
+    : getLangFromHeader(Astro.request.headers.get('accept-language'));
+
+Astro.response.headers.set('Vary', 'Accept-Language, Cookie, User-Agent');
 ---
 
 <Home lang={lang} />

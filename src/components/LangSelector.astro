@@ -1,18 +1,27 @@
 ---
 import {getLangFromUrl} from '../i18n/utils';
+import {ui, defaultLang} from '../i18n/ui';
+
+interface Props {
+  currentLang?: keyof typeof ui;
+}
 
 const langs = [
-  {name: '🇷🇺 Русский', path: '/ru'},
-  {name: '🇺🇸 English', path: '/en'}
-];
+  {name: '🇷🇺 Русский', path: '/ru', code: 'ru'},
+  {name: '🇺🇸 English', path: '/en', code: 'en'}
+] as const;
 
-const currentLangPath = '/' + getLangFromUrl(Astro.url);
-const currentLange = langs.find(l => l.path === currentLangPath)!;
+const {currentLang: propLang} = Astro.props;
+const currentLangCode = propLang ?? getLangFromUrl(Astro.url);
+const currentLang =
+  langs.find(l => l.code === currentLangCode) ??
+  langs.find(l => l.code === defaultLang) ??
+  langs[0];
 ---
 
 <div class="rounded-lg inline-block">
   <button id="currentLang" class="dropdown-option rounded-lg noto-emoji"
-    >{currentLange.name}</button
+    >{currentLang.name}</button
   >
 
   <div id="lang-dropdown" class="hidden">
@@ -21,7 +30,12 @@ const currentLange = langs.find(l => l.path === currentLangPath)!;
     >
       {
         langs.map(o => (
-          <li role="link" data-href={o.path} class="dropdown-option noto-emoji">
+          <li
+            role="link"
+            data-href={o.path}
+            data-lang={o.code}
+            class="dropdown-option noto-emoji"
+          >
             {o.name}
           </li>
         ))
@@ -50,12 +64,29 @@ const currentLange = langs.find(l => l.path === currentLangPath)!;
     '#lang-dropdown > ul'
   )!;
 
+  const currentHtmlLang = document.documentElement.lang;
+  if (currentHtmlLang) {
+    const matchingOption = dropdown.querySelector<HTMLLIElement>(
+      `li[data-lang="${currentHtmlLang}"]`
+    );
+    if (matchingOption) {
+      button.innerText = matchingOption.innerText;
+    }
+  }
+
   dropdown.onclick = e => {
-    if (!(e.target instanceof HTMLLIElement)) {
+    const target = (e.target as HTMLElement)?.closest('li');
+    if (!target || !(target instanceof HTMLLIElement)) {
       return;
     }
 
-    window.location.href = e.target!.dataset.href!;
+    const lang = target.dataset.lang;
+    if (lang) {
+      document.cookie = `lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+      localStorage.setItem('lang', lang);
+    }
+
+    window.location.href = target.dataset.href!;
     dropdown.parentElement!.classList.add('hidden');
     document.removeEventListener('click', outsideClickListener);
   };

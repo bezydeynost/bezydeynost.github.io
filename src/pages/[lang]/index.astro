@@ -9,6 +9,7 @@ if (!langParam || !(langParam in ui)) {
 }
 
 const lang = langParam as keyof typeof ui;
+Astro.cookies.set('lang', lang, {path: '/', maxAge: 31536000, sameSite: 'lax'});
 ---
 
 <Home lang={lang} />
