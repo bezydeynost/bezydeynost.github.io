@@ -30,7 +30,7 @@ export default defineConfig({
     svelte()
   ],
 
-  site: 'https://bezydeynost.vercel.app',
+  site: 'https://bezydeynost-homepage2.vercel.app',
   output: 'server',
 
   adapter: vercel({
